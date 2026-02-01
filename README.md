@@ -46,6 +46,8 @@ This workflow represents a typical quality control and exploratory analysis stra
 - `DESeq2_PCA_airway.html`  
   Rendered HTML output of the complete workflow.
 
+- `docs/index.html`  
+  GitHub Pages output for the tutorial (same content as the HTML report), accessible at:
 ---
 
 ## Requirements

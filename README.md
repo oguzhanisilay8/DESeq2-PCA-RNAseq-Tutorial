@@ -127,7 +127,8 @@ airway → example RNA-seq dataset used in this tutorial
 1. Clone or download this repository.
 
 2. Open the tutorial file in **RStudio**:
-DESeq2_PCA_airway.Rmd
+
+`DESeq2_PCA_airway.Rmd`
 
 3. Run the code chunks or click **Knit** to generate the HTML report.
 ---

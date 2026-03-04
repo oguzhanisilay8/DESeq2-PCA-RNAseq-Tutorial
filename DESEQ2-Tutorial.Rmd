@@ -1,0 +1,239 @@
+---
+title: "PCA Analysis of RNA-seq Data Using DESeq2"
+author: "Oğuzhan Işılay"
+date: "2025-12-30"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Introduction
+
+RNA-seq experiments measure the expression levels of thousands of genes at the same time.  
+Because of this, the dataset becomes very large and complex. It is difficult to understand
+the relationships between samples by looking directly at the raw data.
+
+One common way to explore this type of data is **Principal Component Analysis (PCA)**.
+
+PCA is a **dimensionality reduction method**.  
+It simplifies complex datasets and helps us visualize patterns between samples.
+
+In RNA-seq analysis, PCA is mainly used to:
+
+- visualize similarity between samples
+- detect unexpected samples (outliers)
+- evaluate whether treatment and control groups separate
+
+It is important to remember that **PCA is not a statistical test**.  
+It is mainly used for **exploratory analysis and visualization**.
+
+---
+
+# When Can PCA Be Applied?
+
+PCA cannot be applied to every dataset. Some conditions must be satisfied:
+
+- The data must be **numerical**
+- There must be **multiple samples**
+- The data structure must be correct
+
+In most biological datasets:
+
+- **rows represent genes**
+- **columns represent samples**
+
+---
+
+# RNA-seq Data and PCA
+
+Raw RNA-seq data consist of **read counts**.
+
+However, count data have large differences in variance between genes.
+Some genes have very high counts while others have very low counts.
+
+Because of this, raw counts are **not suitable for PCA directly**.
+
+Before performing PCA, the data should be transformed using methods that
+stabilize variance.
+
+One of the most common tools for this purpose is **DESeq2**.
+
+---
+
+# What is DESeq2?
+
+DESeq2 is a widely used **R/Bioconductor package** for RNA-seq analysis.
+
+It is mainly used to identify **differentially expressed genes**
+between experimental conditions.
+
+However, DESeq2 also provides useful transformations that make RNA-seq
+data suitable for visualization and exploratory analysis.
+
+One of these transformations is called:
+
+**Variance Stabilizing Transformation (VST)**.
+
+VST helps to:
+
+- stabilize variance across genes
+- reduce the effect of extremely high counts
+- make samples more comparable
+
+After applying VST, the data become more suitable for PCA.
+
+---
+
+# Dataset Used in This Example
+
+In this example we use the **airway dataset**.
+
+This dataset is commonly used for teaching RNA-seq analysis because:
+
+- it comes from a real RNA-seq experiment
+- it is relatively small
+- sample metadata is already included
+- it contains clear treatment and control groups
+
+This makes it ideal for learning the DESeq2 workflow.
+
+---
+
+# Loading Required Packages
+
+First we install and load the packages that we will use in this analysis.
+
+
+
+```{r eval=FALSE}
+install.packages("BiocManager") # Install Bioconductor manager (only needed once)
+BiocManager::install(c("airway","DESeq2")) # Install the required bioinformatics packages
+
+```
+
+
+```{r message=FALSE, warning=FALSE}
+
+# Load the airway dataset package
+library(airway)
+
+# Load the DESeq2 package for RNA-seq analysis
+library(DESeq2)
+```
+
+
+
+# Loading the Dataset
+
+The **airway dataset** contains both gene expression counts and sample metadata.
+
+```{r}
+# Load the airway dataset
+data(airway)
+
+# Extract the count matrix
+# Rows = genes
+# Columns = samples
+counts <- assay(airway)
+
+# Extract metadata describing each sample
+# For example: treatment condition, sample name, etc.
+coldata <- colData(airway)
+```
+# Creating a DESeq2 Dataset
+
+To analyze RNA-seq data with **DESeq2**, we first create a **DESeqDataSet** object.
+
+This object combines three important components:
+
+- the **count matrix** (gene expression counts)
+- the **sample metadata**
+- the **experimental design**
+
+```{r}
+dds <- DESeqDataSetFromMatrix(
+  countData = counts,   # gene expression counts
+  colData = coldata,    # sample information (metadata)
+  design = ~ dex        # experimental condition
+)
+```
+
+Here the variable dex represents the experimental condition
+(treatment vs control).
+
+# Running the DESeq2 Pipeline
+
+Next, we run the **DESeq2 analysis pipeline**.
+
+```{r message=FALSE, warning=FALSE}
+dds <- DESeq(dds) # Run the main DESeq2 analysis
+```
+
+This step performs several important operations:
+
+- **normalization** – adjusts for differences in sequencing depth between samples  
+- **dispersion estimation** – estimates variability in gene expression  
+- **model fitting** – fits a statistical model for each gene
+
+These steps prepare the data for downstream analyses such as PCA and differential expression analysis.
+
+#  Variance Stabilizing Transformation
+
+Before performing PCA, we transform the RNA-seq count data using **Variance Stabilizing Transformation (VST)**.
+
+```{r}
+vsd <- vst(dds, blind = FALSE) # Apply variance stabilizing transformation
+```
+
+This transformation helps to:
+
+- stabilize the variance across genes
+- reduce the effect of extremely high counts
+- make samples easier to compare
+
+After this step, the data become more suitable for visualization methods such as **PCA**.
+
+# PCA Visualization
+
+Now we can generate a **PCA plot**.
+
+```{r}
+plotPCA(vsd, intgroup = "dex")
+```
+
+
+
+Each point in the plot represents **one sample**.
+
+Samples that have similar gene expression patterns will appear close to each other in the plot.
+
+# How to Interpret the PCA Plot
+
+The PCA plot contains two main axes:
+
+**PC1 (Principal Component 1)**  
+Represents the largest source of variation in the dataset.
+
+**PC2 (Principal Component 2)**  
+Represents the second largest source of variation.
+
+Together, PC1 and PC2 summarize a large portion of the variability in the dataset.
+
+In RNA-seq PCA plots we usually expect:
+
+- samples from the same group to cluster together  
+- treatment and control samples to separate  
+
+If a sample appears far away from others, it may indicate a potential **outlier or technical issue**.
+
+# Summary
+
+In this tutorial we learned:
+
+- what PCA is  
+- why PCA is useful for RNA-seq data  
+- why raw count data must be transformed  
+- how DESeq2 and VST prepare the data for PCA  
+- how to visualize samples using PCA  
+
+PCA is an important **quality control step** in RNA-seq analysis and helps researchers understand the structure of their data before performing more advanced analyses.

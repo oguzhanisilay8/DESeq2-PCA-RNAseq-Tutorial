@@ -29,93 +29,164 @@ The dataset includes:
 - Sample metadata (control vs treatment groups)  
 - A clear experimental design suitable for PCA visualization
 
-  ## Example PCA Plot
-
-![PCA plot](figures/pca_plot.png)
-
 ---
 
 ## Workflow Overview
 
-The analysis follows a standard exploratory RNA-seq pipeline:
-Counts + Metadata → DESeq2 → VST → PCA → Visualization
-This workflow represents a typical quality control and exploratory analysis strategy for bulk RNA-seq data.
+The analysis follows a simplified RNA-seq exploratory workflow:
+```
+RNA-seq count matrix + sample metadata
+        ↓
+Create DESeq2 dataset object
+        ↓
+Normalization and dispersion estimation
+        ↓
+Variance Stabilizing Transformation (VST)
+        ↓
+Principal Component Analysis (PCA)
+        ↓
+Visualization and biological interpretation
+```
+
+This workflow represents a typical **quality control and exploratory analysis strategy for bulk RNA-seq data**.
 
 ---
-## Files
+## Repository Structure
+
+The repository is organized as follows:
+```
+DESeq2-PCA-RNAseq-Tutorial
+│
+├── docs/
+│   └── index.html            # Rendered tutorial used for GitHub Pages
+│
+├── figures/
+│   └── pca_plot.png          # PCA plot generated during the analysis
+│
+├── DESeq2_PCA_airway.Rmd     # Main R Markdown tutorial file
+├── README.md                 # Project documentation
+├── LICENSE
+```
+
+**File descriptions**
 
 - `DESeq2_PCA_airway.Rmd`  
-  R Markdown file containing explanations, code, and analysis.
-
-- `DESeq2_PCA_airway.html`  
-  Rendered HTML output of the complete workflow.
+  The main tutorial file containing explanations, code, and analysis steps.
 
 - `docs/index.html`  
-  GitHub Pages output for the tutorial (same content as the HTML report), accessible at:
+  Rendered HTML output used for GitHub Pages so the tutorial can be viewed directly in the browser.
+
+- `figures/pca_plot.png`  
+  Example PCA plot generated from the RNA-seq dataset.
+
+---
+
+## Example PCA Plot
+
+The following PCA plot shows the separation between treatment and control samples
+in the **airway RNA-seq dataset** after applying the Variance Stabilizing
+Transformation (VST) provided by DESeq2.
+
+![PCA plot of airway RNA-seq samples](figures/pca_plot.png)
+
+*Figure: PCA visualization of RNA-seq samples from the airway dataset.  
+Samples cluster according to treatment condition (dexamethasone vs untreated),
+demonstrating how PCA can reveal global differences in gene expression profiles.*
+
 ---
 
 ## Requirements
 
-- R (version ≥ 4.2 recommended)  
-- Required R packages:
-  - `DESeq2`  
-  - `airway`  
+To run this tutorial you need:
 
-Packages should be installed before running the analysis.
+- **R (version ≥ 4.2 recommended)**
+- **Bioconductor**
 
+Required R packages:
+- `DESeq2`
+- `airway`
+- `BiocManager`
+
+### Install Required Packages
+
+If the required packages are not installed, you can install them in R using:
+
+```r
+install.packages("BiocManager")
+BiocManager::install(c("DESeq2", "airway"))
+```
+These packages provide:
+
+DESeq2 → RNA-seq differential expression analysis and transformations
+
+airway → example RNA-seq dataset used in this tutorial
 ---
 
 ## How to Run
 
-1. Clone or download this repository.  
-2. Open `DESeq2_PCA_airway.Rmd` in RStudio.  
-3. Install required packages if needed.  
-4. Render the file to HTML using:
+1. Clone or download this repository.
 
-```r
-rmarkdown::render("DESeq2_PCA_airway.Rmd")
-```
-The rendered HTML file will contain the complete analysis and explanations.
+2. Open the tutorial file in **RStudio**:
+DESeq2_PCA_airway.Rmd
 
+3. Run the code chunks or click **Knit** to generate the HTML report.
+---
 ## Target Audience
 
 This repository is intended for:
 
-Undergraduate students in Biotechnology and Bioinformatics
-
-Researchers new to RNA-seq exploratory data analysis
-
-Learners interested in PCA interpretation in biological data
-
+- undergraduate students in **Biotechnology and Bioinformatics**  
+- researchers new to **RNA-seq exploratory data analysis**  
+- learners interested in **PCA interpretation in biological datasets**
+---
 ## Educational Purpose
 
-This material is designed for educational use and emphasizes:
+This tutorial was developed for educational purposes and emphasizes:
 
-Step-by-step explanation of analytical logic
+- step-by-step explanation of the analytical workflow  
+- interpretation of PCA results in a biological context  
+- understanding quality control in RNA-seq data analysis  
 
-Interpretation of PCA results in biological context
-
-Understanding quality control in RNA-seq workflows
-
-For large-scale or clinical RNA-seq studies, additional statistical modeling and quality control procedures are required.
-
+For large-scale or clinical RNA-seq studies, additional statistical modeling and quality control procedures would be required.
+---
 ## AI Assistance Disclosure
 
 Artificial intelligence tools were partially used to improve documentation structure, clarity, and organization. All analytical workflows, interpretations, and final validations were performed by the author.
-
+---
 ## Author
 
-Oğuzhan Işılay
-Undergraduate Student in Biotechnology and Bioinformatics
-Mersin University, Türkiye
+**Oğuzhan Işılay**  
+Undergraduate Student in Biotechnology  
+Mersin University — Türkiye  
 
-Interests: Bioinformatics, RNA-seq Analysis, Data Visualization
+Research interests:
 
-GitHub: https://github.com/oguzhanisilay8
+- Bioinformatics  
+- RNA-seq analysis  
+- Biological data visualization  
 
+GitHub:  
+https://github.com/oguzhanisilay8
+---
 ## License
 
-This project is released under the MIT License.
+This project is distributed under the **MIT License**.
 
-You are free to use, modify, and share the material with proper attribution.
+You are free to use, modify, and distribute this material with proper attribution.
+
+For more details, see the `LICENSE` file included in this repository.
+## Citation
+
+If you use this tutorial in teaching materials, coursework, or other educational resources, please cite the repository as follows:
+
+Oğuzhan Işılay (2026).  
+*DESeq2 PCA Analysis for RNA-seq Data (airway dataset).*  
+GitHub repository.  
+https://github.com/oguzhanisilay8/DESeq2-PCA-RNAseq-Tutorial
+
+## Tutorial Website
+
+You can view the rendered tutorial here:
+
+https://oguzhanisilay8.github.io/DESeq2-PCA-RNAseq-Tutorial/
 

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: "DESeq2 PCA Analysis for RNA-seq Data (airway dataset)"
+message: "If you use this tutorial, please cite it as below."
+type: software
+authors:
+  - family-names: "Işılay"
+    given-names: "Oğuzhan"
+    affiliation: "Mersin University"
+version: 1.0
+date-released: 2026
+url: "https://github.com/oguzhanisilay8/DESeq2-PCA-RNAseq-Tutorial"
+license: MIT

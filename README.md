@@ -27,7 +27,11 @@ The dataset includes:
 
 - Raw RNA-seq count matrix (genes × samples)  
 - Sample metadata (control vs treatment groups)  
-- A clear experimental design suitable for PCA visualization  
+- A clear experimental design suitable for PCA visualization
+
+  ## Example PCA Plot
+
+![PCA plot](figures/pca_plot.png)
 
 ---
 

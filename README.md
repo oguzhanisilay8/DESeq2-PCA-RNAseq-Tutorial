@@ -1,4 +1,8 @@
 # DESeq2 PCA Analysis for RNA-seq Data (airway dataset)
+![R](https://img.shields.io/badge/language-R-blue)
+![Bioconductor](https://img.shields.io/badge/Bioconductor-DESeq2-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
+![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)
 
 This repository provides a beginner-friendly introduction to **Principal Component Analysis (PCA)** applied to RNA-seq data using the **DESeq2** package in R.
 

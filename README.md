@@ -153,10 +153,13 @@ This tutorial was developed for educational purposes and emphasizes:
 - understanding quality control in RNA-seq data analysis  
 
 For large-scale or clinical RNA-seq studies, additional statistical modeling and quality control procedures would be required.
+
 ---
+
 ## AI Assistance Disclosure
 
 Artificial intelligence tools were partially used to improve documentation structure, clarity, and organization. All analytical workflows, interpretations, and final validations were performed by the author.
+
 ---
 ## Author
 
@@ -172,6 +175,7 @@ Research interests:
 
 GitHub:  
 https://github.com/oguzhanisilay8
+
 ---
 ## License
 
@@ -180,6 +184,9 @@ This project is distributed under the **MIT License**.
 You are free to use, modify, and distribute this material with proper attribution.
 
 For more details, see the `LICENSE` file included in this repository.
+
+---
+
 ## Citation
 
 If you use this tutorial in teaching materials, coursework, or other educational resources, please cite the repository as follows:
@@ -188,6 +195,8 @@ Oğuzhan Işılay (2026).
 *DESeq2 PCA Analysis for RNA-seq Data (airway dataset).*  
 GitHub repository.  
 https://github.com/oguzhanisilay8/DESeq2-PCA-RNAseq-Tutorial
+
+---
 
 ## Tutorial Website
 

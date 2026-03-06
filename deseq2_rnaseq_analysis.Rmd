@@ -1,0 +1,452 @@
+---
+title: "RNA-seq Differential Expression Analysis using DESeq2"
+author: "Oğuzhan Işılay"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+---
+
+
+
+# Introduction
+
+In this document, we will analyze RNA-seq data using the **DESeq2** package in R.
+
+The goal of this tutorial is not only to run the code, but also to understand why each step is performed during the analysis.
+
+In this workflow we will cover the following steps:
+
+- loading RNA-seq data
+- preparing the count matrix and sample information
+- creating a DESeq2 dataset object
+- running differential expression analysis
+- exploring sample structure using PCA
+- visualizing results using MA plot and volcano plot
+- showing significant genes with a heatmap
+- performing a simple pathway enrichment analysis
+
+This tutorial is written mainly for students in biotechnology and bioinformatics who want to learn the basic workflow of RNA-seq analysis.
+
+The explanations try to keep the analysis simple and clear so that beginners can follow the logic of the steps.
+
+---
+
+# Dataset
+
+In this tutorial we will use the **airway** dataset.
+
+The airway dataset is commonly used for teaching RNA-seq analysis with DESeq2.  
+It contains RNA-seq count data together with sample information.
+
+The dataset includes two main components:
+
+- **count matrix** – raw RNA-seq counts for genes
+- **metadata (colData)** – information about the samples
+
+The sample information allows us to compare different experimental conditions and perform differential expression analysis.
+
+Using this dataset helps us focus on learning the analysis workflow without needing to preprocess raw sequencing files.
+
+---
+
+# Loading the RNA-seq Dataset
+
+In this section we will load the RNA-seq dataset that will be used in the analysis.
+
+The dataset used in this tutorial is called **airway**.  
+It is available through **Bioconductor**, which is a collection of R packages developed for bioinformatics and computational biology.
+
+The airway dataset contains RNA-seq data from human airway smooth muscle cells.
+
+It includes both:
+
+- gene expression counts
+- sample information describing the experimental conditions
+
+To access this dataset we first need to load the required packages.
+
+```{r message=FALSE, warning=FALSE}
+#install.packages("BiocManager")
+
+library(airway)
+
+library(DESeq2)
+```
+
+
+After loading the packages, we can load the dataset into the R environment.
+
+
+```{r}
+data(airway)
+```
+
+The object called **airway** is a special data structure used in Bioconductor called a **SummarizedExperiment**.
+
+This structure stores multiple types of information together, such as:
+
+- the count matrix
+- sample metadata
+- feature annotations
+
+To understand the structure of the dataset, we can inspect the object.
+
+```{r}
+airway
+```
+
+---
+
+# Extracting the Count Matrix and Sample Metadata
+
+In RNA-seq analysis, two types of information are required for most workflows.
+
+The first one is the **count matrix**.
+
+The count matrix contains the raw RNA-seq counts for each gene in each sample.
+
+In this matrix:
+
+- rows represent genes
+- columns represent samples
+- values represent the number of sequencing reads mapped to each gene
+
+The second important component is the **sample metadata**.
+
+Metadata describes the biological or experimental information about each sample. For example:
+
+- treatment condition
+- cell line
+- experimental setup
+
+In the airway dataset, both the count matrix and the metadata are stored inside the **SummarizedExperiment** object.
+
+We can extract the count matrix using the `assay()` function.
+
+```{r}
+counts <- assay(airway)
+```
+
+
+Now we can check the dimensions of the count matrix.
+
+```{r}
+dim(counts)
+```
+
+
+This command shows the number of genes and the number of samples in the dataset.
+
+To inspect the first few rows of the matrix, we can run:
+
+```{r}
+head(counts)
+```
+
+
+Next, we extract the sample metadata using the `colData()` function.
+
+```{r}
+metadata <- colData(airway)
+```
+
+
+We can inspect the metadata with:
+
+```{r}
+metadata
+```
+
+
+The metadata contains information about the samples, such as treatment condition and cell line.
+
+---
+
+# Creating a DESeq2 Dataset
+
+Before running DESeq2, we need to convert our data into a specific object used by the DESeq2 package.
+
+This object is called a **DESeqDataSet**.
+
+It basically combines three things:
+
+- the count matrix
+- the sample metadata
+- the experimental design
+
+In the airway dataset, information about the samples is stored in the metadata.
+
+For example, the variable **dex** shows whether a sample is treated or untreated.
+
+Now we can create the DESeq2 dataset using the count matrix and the metadata.
+
+```{r}
+dds <- DESeqDataSetFromMatrix(
+countData = counts,
+colData = metadata,
+design = ~ dex
+)
+
+```
+
+Here:
+
+- **countData** contains the raw RNA-seq counts
+- **colData** contains the sample metadata
+- **design** defines the variable used in the analysis
+
+---
+
+# Running the DESeq2 Analysis
+
+After creating the DESeq2 dataset object, we can run the analysis.
+
+This is done using the **DESeq()** function.
+
+```{r message=FALSE, warning=FALSE}
+dds <- DESeq(dds)
+```
+
+
+This function performs several steps automatically:
+
+- normalization of the count data
+- estimation of gene dispersion
+- fitting the statistical model
+
+After this step, the data is ready for differential expression analysis and result extraction.
+
+---
+
+# Inspecting Differential Expression Results
+
+After running the DESeq2 analysis, we can examine the differential expression results for each gene.
+
+This can be done using the **results()** function.
+
+```{r}
+res <- results(dds)
+```
+
+
+This function returns a table containing the statistical results for every gene.
+
+Let's take a quick look at the result table.
+
+```{r}
+head(res)
+```
+
+
+The table includes several important columns:
+
+- **log2FoldChange** → shows how much the gene expression changes between conditions  
+- **pvalue** → p-value obtained from the statistical test  
+- **padj** → p-value adjusted for multiple testing
+
+In RNA-seq analysis, genes with **padj < 0.05** are usually considered statistically significant.
+
+We can count how many genes are significant using:
+
+```{r}
+sum(res$padj < 0.05, na.rm = TRUE)
+```
+---
+
+# MA Plot
+
+One of the easiest ways to visualize differential expression results is the **MA plot**.
+
+An MA plot shows two pieces of information for each gene:
+
+- the average expression level
+- the expression change between conditions
+
+In DESeq2, generating this plot is very simple.
+
+```{r}
+plotMA(res)
+```
+
+
+In this plot, each point represents a gene.
+
+In the graph:
+
+- the **x-axis** shows the average expression level
+- the **y-axis** shows the log2 fold change
+
+Usually, the red points represent statistically significant genes.
+
+This plot helps quickly identify genes that are strongly upregulated or downregulated.
+
+---
+
+# Volcano Plot
+
+Another way to visualize differential expression results is by using a **volcano plot**.
+
+A volcano plot shows two important values at the same time:
+
+- gene expression change (log2FoldChange)
+- statistical significance (-log10 p-value)
+
+This allows us to quickly identify genes that show both strong expression changes and high statistical significance.
+
+First, we convert the result table into a data frame.
+
+```{r}
+res_df <- as.data.frame(res)
+```
+
+
+Now we can generate the volcano plot.
+
+```{r}
+plot(res_df$log2FoldChange,
+-log10(res_df$padj),
+pch = 20,
+main = "Volcano Plot",
+xlab = "log2 Fold Change",
+ylab = "-log10(p-value)")
+
+```
+
+In this plot:
+
+- genes on the right side are **upregulated**
+- genes on the left side are **downregulated**
+
+The y-axis represents statistical significance.
+
+This plot helps quickly identify genes that may be biologically interesting.
+
+---
+
+# Heatmap of Significant Genes
+
+After differential expression analysis, it is often useful to examine the expression patterns of significant genes.
+
+A common way to visualize these patterns is using a **heatmap**.
+
+First, we select the significant genes.
+
+Here we select genes with **padj < 0.05**.
+
+```{r}
+sig_genes <- res[which(res$padj < 0.05), ]
+```
+
+
+Next, we extract the gene names.
+
+```{r}
+sig_gene_names <- rownames(sig_genes)
+```
+
+
+Then we extract the expression values for these genes from the count matrix.
+
+```{r}
+mat <- counts[sig_gene_names, ]
+```
+
+
+Before plotting the heatmap, it is often helpful to transform the data.
+
+For example, we can apply a log transformation.
+
+```{r}
+mat_log <- log2(mat + 1)
+```
+
+
+Finally, we generate the heatmap.
+
+```{r}
+heatmap(mat_log)
+```
+
+
+This plot shows how significant genes are expressed across different samples.
+
+Heatmaps help visualize patterns and similarities between genes and samples.
+
+---
+
+# Pathway Enrichment Analysis
+
+After differential expression analysis, an important question is:
+
+Which biological processes are associated with these genes?
+
+To investigate this, we can perform **pathway enrichment analysis**.
+
+This analysis tests whether the significant genes are overrepresented in known biological pathways.
+
+First, we create a list of the significant gene names.
+
+```{r}
+gene_list <- rownames(sig_genes)
+```
+
+
+Pathway analyses are usually performed using biological databases such as:
+
+- KEGG
+- GO (Gene Ontology)
+- Reactome
+
+In R, several packages can be used for enrichment analysis.  
+One commonly used package is **clusterProfiler**.
+
+```{r message=FALSE, warning=FALSE}
+#BiocManager::install("clusterProfiler")
+
+library(clusterProfiler)
+```
+
+
+Pathway enrichment analysis helps us understand the biological meaning of the genes identified in the differential expression analysis.
+
+---
+
+# Conclusion
+
+In this tutorial, we demonstrated how RNA-seq data can be analyzed using the **DESeq2** package.
+
+The workflow included the following steps:
+
+- loading the RNA-seq dataset
+- extracting the count matrix and sample metadata
+- creating a DESeq2 dataset object
+- running the differential expression analysis
+- visualizing the results using different plots
+
+These steps allow us to identify genes that show changes in expression between experimental conditions.
+
+Visualization methods such as MA plots, volcano plots, and heatmaps help make the results easier to interpret.
+
+This tutorial was written as a simple guide for students who are beginning to learn RNA-seq analysis with DESeq2.
+
+---
+
+# Reproducibility
+
+For reproducibility, it is useful to record the R session information used during the analysis.
+
+This includes:
+
+- the R version
+- operating system
+- loaded packages and their versions
+
+Recording this information helps ensure that the analysis can be reproduced in the future.
+
+```{r}
+sessionInfo()
+```
+

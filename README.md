@@ -1,206 +1,256 @@
 # DESeq2 PCA Analysis for RNA-seq Data (airway dataset)
+
 ![R](https://img.shields.io/badge/language-R-blue)
 ![Bioconductor](https://img.shields.io/badge/Bioconductor-DESeq2-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)
 
-This repository provides a beginner-friendly introduction to **Principal Component Analysis (PCA)** applied to RNA-seq data using the **DESeq2** package in R.
+This repository provides a beginner-friendly introduction to RNA-seq exploratory analysis using the DESeq2 package in R.
 
-The tutorial is designed for undergraduate-level bioinformatics and biotechnology students, with a strong focus on understanding *why* each analytical step is performed rather than only *how* to execute the code.
+The tutorial focuses on understanding how RNA-seq data can be explored and interpreted using dimensionality reduction and visualization techniques such as PCA, MA plots, volcano plots and heatmaps.
 
----
-
-## Contents
-
-This tutorial covers the following topics:
-
-- Conceptual explanation of PCA in RNA-seq analysis  
-- Data requirements and assumptions for PCA  
-- Introduction to DESeq2 and its role in RNA-seq workflows  
-- Variance Stabilizing Transformation (VST)  
-- PCA visualization and interpretation  
-- Practical example using the **airway** RNA-seq dataset  
+The main goal is to help beginners understand the logic of RNA-seq analysis rather than only executing code.
 
 ---
 
-## Dataset
+# Project Overview
 
-The analysis is based on the **airway** dataset, a well-curated RNA-seq dataset commonly used for teaching and demonstration purposes.
+RNA sequencing (RNA-seq) allows researchers to measure gene expression across different biological conditions.
 
-The dataset includes:
+However, raw RNA-seq count data is difficult to interpret directly. For this reason statistical methods and visualization tools are used to explore global expression patterns and identify genes that change between conditions.
 
-- Raw RNA-seq count matrix (genes × samples)  
-- Sample metadata (control vs treatment groups)  
-- A clear experimental design suitable for PCA visualization
+In this tutorial we focus on the following tasks:
+
+- exploring RNA-seq datasets
+- understanding sample relationships
+- visualizing gene expression differences
+- learning the basic workflow used in transcriptomics analysis
+
+The analysis is performed using the DESeq2 package from the Bioconductor ecosystem.
 
 ---
 
-## Workflow Overview
+# Dataset
+
+The analysis is based on the airway dataset.
+
+The airway dataset is widely used in RNA-seq tutorials and teaching material because it contains both gene expression counts and sample metadata.
+
+The dataset contains:
+
+- raw RNA-seq count matrix
+- sample metadata
+- control and treatment conditions
+- human airway smooth muscle cell samples
+
+This allows us to demonstrate RNA-seq exploratory analysis without requiring raw sequencing preprocessing.
+
+---
+
+# Workflow Overview
 
 The analysis follows a simplified RNA-seq exploratory workflow:
-```
-RNA-seq count matrix + sample metadata
-        ↓
-Create DESeq2 dataset object
-        ↓
-Normalization and dispersion estimation
-        ↓
-Variance Stabilizing Transformation (VST)
-        ↓
-Principal Component Analysis (PCA)
-        ↓
-Visualization and biological interpretation
-```
 
-This workflow represents a typical **quality control and exploratory analysis strategy for bulk RNA-seq data**.
+RNA-seq count matrix + sample metadata  
+        ↓  
+Create DESeq2 dataset object  
+        ↓  
+Normalization and dispersion estimation  
+        ↓  
+Variance Stabilizing Transformation (VST)  
+        ↓  
+Principal Component Analysis (PCA)  
+        ↓  
+Differential expression analysis  
+        ↓  
+Visualization (MA plot, Volcano plot, Heatmap)
+
+This type of workflow is commonly used as a first step in RNA-seq data exploration.
 
 ---
-## Repository Structure
 
-The repository is organized as follows:
-```
+# Repository Structure
+
 DESeq2-PCA-RNAseq-Tutorial
-│
-├── docs/
-│   └── index.html            # Rendered tutorial used for GitHub Pages
-│
-├── figures/
-│   └── pca_plot.png          # PCA plot generated during the analysis
-│
-├── DESeq2_PCA_airway.Rmd     # Main R Markdown tutorial file
-├── README.md                 # Project documentation
-├── LICENSE
-```
 
-**File descriptions**
+docs/  
+    deseq2_rnaseq_analysis.html  
+    index.html  
 
-- `DESeq2_PCA_airway.Rmd`  
-  The main tutorial file containing explanations, code, and analysis steps.
+figures/  
+    pca_plot.png  
+    volcano_plot.png  
+    ma_plot.png  
+    heatmap_top_genes.png  
 
-- `docs/index.html`  
-  Rendered HTML output used for GitHub Pages so the tutorial can be viewed directly in the browser.
+deseq2_pca_tutorial.Rmd  
+deseq2_rnaseq_analysis.Rmd  
 
-- `figures/pca_plot.png`  
-  Example PCA plot generated from the RNA-seq dataset.
+README.md  
+LICENSE  
+CITATION.cff
 
----
+The docs folder contains the rendered HTML tutorial generated from the RMarkdown analysis.
 
-## Example PCA Plot
-
-The following PCA plot shows the separation between treatment and control samples
-in the **airway RNA-seq dataset** after applying the Variance Stabilizing
-Transformation (VST) provided by DESeq2.
-
-![PCA plot of airway RNA-seq samples](figures/pca_plot.png)
-
-*Figure: PCA visualization of RNA-seq samples from the airway dataset.  
-Samples cluster according to treatment condition (dexamethasone vs untreated),
-demonstrating how PCA can reveal global differences in gene expression profiles.*
+The figures folder contains plots generated during the analysis.
 
 ---
 
-## Requirements
+# PCA Visualization
 
-To run this tutorial you need:
+Principal Component Analysis (PCA) is commonly used in RNA-seq analysis to explore relationships between samples.
 
-- **R (version ≥ 4.2 recommended)**
-- **Bioconductor**
+PCA reduces thousands of gene expression variables into a few components that capture the largest sources of variation.
 
-Required R packages:
-- `DESeq2`
-- `airway`
-- `BiocManager`
+![PCA Plot](figures/pca_plot.png)
 
-### Install Required Packages
-
-If the required packages are not installed, you can install them in R using:
-
-```r
-install.packages("BiocManager")
-BiocManager::install(c("DESeq2", "airway"))
-```
-These packages provide:
-
-DESeq2 → RNA-seq differential expression analysis and transformations
-
-airway → example RNA-seq dataset used in this tutorial
----
-
-## How to Run
-
-1. Clone or download this repository.
-
-2. Open the tutorial file in **RStudio**:
-
-`DESeq2_PCA_airway.Rmd`
-
-3. Run the code chunks or click **Knit** to generate the HTML report.
----
-## Target Audience
-
-This repository is intended for:
-
-- undergraduate students in **Biotechnology and Bioinformatics**  
-- researchers new to **RNA-seq exploratory data analysis**  
-- learners interested in **PCA interpretation in biological datasets**
----
-## Educational Purpose
-
-This tutorial was developed for educational purposes and emphasizes:
-
-- step-by-step explanation of the analytical workflow  
-- interpretation of PCA results in a biological context  
-- understanding quality control in RNA-seq data analysis  
-
-For large-scale or clinical RNA-seq studies, additional statistical modeling and quality control procedures would be required.
+Samples that cluster together usually share similar transcriptional profiles.
 
 ---
 
-## AI Assistance Disclosure
+# Volcano Plot
 
-Artificial intelligence tools were partially used to improve documentation structure, clarity, and organization. All analytical workflows, interpretations, and final validations were performed by the author.
+The volcano plot combines fold change and statistical significance in one visualization.
+
+- x-axis shows log2 fold change
+- y-axis shows statistical significance (-log10 p-value)
+
+![Volcano Plot](figures/volcano_plot.png)
+
+Genes that appear far from the center and high on the plot are often the most biologically interesting candidates.
 
 ---
-## Author
 
-**Oğuzhan Işılay**  
+# MA Plot
+
+The MA plot is another common visualization in RNA-seq analysis.
+
+It shows how fold changes relate to average gene expression levels.
+
+![MA Plot](figures/ma_plot.png)
+
+In this plot:
+
+- x-axis shows mean normalized expression
+- y-axis shows log fold change
+
+This plot helps detect genes that are strongly upregulated or downregulated.
+
+---
+
+# Heatmap of Gene Expression
+
+Heatmaps are widely used in transcriptomics to visualize expression patterns across samples.
+
+![Heatmap](figures/heatmap_top_genes.png)
+
+Heatmaps help reveal patterns such as:
+
+- sample clustering
+- gene co-expression
+- treatment effects
+
+---
+
+# Tools and Packages
+
+The analysis was performed using R and packages from the Bioconductor ecosystem.
+
+Main packages used:
+
+DESeq2  
+airway  
+pheatmap  
+clusterProfiler  
+
+These tools are widely used for RNA-seq analysis and transcriptomics research.
+
+---
+
+# Reproducibility
+
+The analysis is written as an RMarkdown document.
+
+This approach allows code, explanations and figures to be integrated in a single document.
+
+The rendered HTML tutorial can be found in the docs folder:
+
+docs/index.html
+
+Session information and package versions are included in the analysis using:
+
+sessionInfo()
+
+This helps ensure that the analysis can be reproduced in the future.
+
+---
+
+# Educational Purpose
+
+This repository was created as a learning project while studying RNA-seq analysis in R.
+
+The tutorial emphasizes:
+
+- understanding the analysis workflow
+- interpreting RNA-seq visualizations
+- practicing reproducible bioinformatics analysis
+
+For real research projects, additional quality control and statistical modeling steps would normally be required.
+
+---
+
+# AI Assistance Disclosure
+
+Artificial intelligence tools were partially used to assist with documentation structure, language clarity and organization.
+
+All analysis steps, interpretation and validation were performed by the author.
+
+---
+
+# Author
+
+Oğuzhan Işılay  
 Undergraduate Student in Biotechnology  
-Mersin University — Türkiye  
+Mersin University — Türkiye
 
-Research interests:
+Research interests
 
-- Bioinformatics  
-- RNA-seq analysis  
-- Biological data visualization  
+Bioinformatics  
+RNA-seq analysis  
+Biological data visualization  
 
-GitHub:  
+GitHub  
 https://github.com/oguzhanisilay8
 
----
-## License
-
-This project is distributed under the **MIT License**.
-
-You are free to use, modify, and distribute this material with proper attribution.
-
-For more details, see the `LICENSE` file included in this repository.
+LinkedIn  
+https://www.linkedin.com/in/oguzhan-isilay-
 
 ---
 
-## Citation
+# License
 
-If you use this tutorial in teaching materials, coursework, or other educational resources, please cite the repository as follows:
+This project is released under the MIT License.
 
-Oğuzhan Işılay (2026).  
-*DESeq2 PCA Analysis for RNA-seq Data (airway dataset).*  
-GitHub repository.  
+You are free to use, modify and distribute the material with proper attribution.
+
+See the LICENSE file for details.
+
+---
+
+# Citation
+
+If you use this tutorial for teaching or educational purposes please cite:
+
+Oğuzhan Işılay (2026)  
+DESeq2 PCA Analysis for RNA-seq Data (airway dataset)  
+GitHub repository  
+
 https://github.com/oguzhanisilay8/DESeq2-PCA-RNAseq-Tutorial
 
 ---
 
-## Tutorial Website
+# Tutorial Website
 
-You can view the rendered tutorial here:
+The rendered tutorial can be viewed here:
 
 https://oguzhanisilay8.github.io/DESeq2-PCA-RNAseq-Tutorial/
-

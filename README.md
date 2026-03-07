@@ -83,8 +83,10 @@ figures/
     ma_plot.png  
     heatmap_top_genes.png  
 
-deseq2_pca_tutorial.Rmd  
-deseq2_rnaseq_analysis.Rmd  
+deseq2_pca_tutorial.Rmd
+deseq2_pca_tutorial.pdf
+deseq2_rnaseq_analysis.Rmd
+deseq2_rnaseq_analysis.pdf
 
 README.md  
 LICENSE  
